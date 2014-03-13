@@ -29,7 +29,7 @@ div.input {
 
 /* ensure that all inputs have the same distance to the question */
 div.input input[type="text"], div.input textarea, div.input select {
-    margin: 10px 0 0 0;        
+    margin: 10px 0 0 0;
 }
 
 div.input span.add-on {
@@ -89,7 +89,7 @@ html, body {
 }
 
 .rangeinput label {
-    text-align: left; 
+    text-align: left;
     max-width: 40px;
     margin-left: 10px;
     padding-top: 4px;
@@ -100,22 +100,31 @@ html, body {
 }
 
 .rangeinput span.help-block {
-    clear: left; 
+    clear: left;
     margin-left: 35px;
 }
 
 input.sending {
     text-shadow: 0px 0px 5px white !important;
-    -webkit-transition: 0.3s linear all !important;  
+    -webkit-transition: 0.3s linear all !important;
        -moz-transition: 0.3s linear all !important;
          -o-transition: 0.3s linear all !important;
-            transition: 0.3s linear all !important;   
+            transition: 0.3s linear all !important;
 
 }
 
 .questionset-submit input:disabled {
-    -webkit-transition: 0.3s linear all !important;  
+    -webkit-transition: 0.3s linear all !important;
        -moz-transition: 0.3s linear all !important;
          -o-transition: 0.3s linear all !important;
-            transition: 0.3s linear all !important;   
+            transition: 0.3s linear all !important;
+}
+
+.answer-options{
+    margin-bottom:5px;
+}
+
+.total-answers{
+    margin-top:0px;
+    margin-bottom:15px;
 }

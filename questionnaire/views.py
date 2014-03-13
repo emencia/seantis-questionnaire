@@ -646,7 +646,7 @@ def _table_headers(questions):
 @permission_required("questionnaire.export")
 def export_csv(request, qid): # questionnaire_id
     """
-    For a given questionnaire id, generaete a CSV containing all the
+    For a given questionnaire id, generate a CSV containing all the
     answers for all subjects.
     """
     import tempfile, csv, cStringIO, codecs
@@ -776,6 +776,18 @@ def answer_export(questionnaire, answers=None):
         out.append((subject, runid, row))
     return headings, out
 
+def show_summary(request, qid): # questionnaire_id
+    """
+    For a given questionnaire id, generate a summary answers
+    """
+    questionnaire = get_object_or_404(Questionnaire, pk=int(qid))
+    summay_data = answer_summary(questionnaire)
+
+    from pprint import pprint
+    print pprint(summay_data)
+    return r2r("questionnaire/summary.html", request,
+                **{'summary_data':summay_data, 'questionnaire':questionnaire})
+
 def answer_summary(questionnaire, answers=None):
     """
     questionnaire -- questionnaire model for summary
@@ -815,6 +827,7 @@ def answer_summary(questionnaire, answers=None):
         for a in answers.filter(question=question):
             ans = a.split_answer()
             for choice in ans:
+                total_ans += 1
                 if type(choice) == list:
                     freeforms.extend(choice)
                 elif choice in choice_totals:

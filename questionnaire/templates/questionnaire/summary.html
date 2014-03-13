@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load questionnaire i18n %}
+
+{% block content %}
+<h2>{% trans 'Summary answers for questionnaire' %} : {{questionnaire.name}}</h2>
+
+{% for answer in summary_data%}
+    <h5>{{answer.0}} - {{answer.1}}</h5>
+
+    <ul class="answer-options">
+        {% for option in answer.3 %}
+            <li>{{option.1}} - {{option.2}} ({% widthratio option.2 answer.2 100 %} %)</li>
+        {% endfor%}
+    </ul>
+    <div class="total-answers">{% trans 'Total answers' %} : {{answer.2}}</div>
+{% endfor%}
+
+{% endblock %}
