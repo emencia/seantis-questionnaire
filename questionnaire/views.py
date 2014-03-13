@@ -51,7 +51,7 @@ def delete_answer(question, subject, runid):
 def add_answer(runinfo, question, answer_dict):
     """
     Add an Answer to a Question for RunInfo, given the relevant form input
-    
+
     answer_dict contains the POST'd elements for this question, minus the
     question_{number} prefix.  The question_{number} form value is accessible
     with the ANSWER key.
@@ -73,10 +73,10 @@ def add_answer(runinfo, question, answer_dict):
 
     # first, delete all existing answers to this question for this particular user+run
     delete_answer(question, runinfo.subject, runinfo.runid)
-    
+
     # then save the new answer to the database
     answer.save()
-    
+
     return True
 
 def check_parser(runinfo, exclude=[]):
@@ -101,7 +101,7 @@ def check_parser(runinfo, exclude=[]):
         checks = parse_checks(checks)
 
         for check, value in checks.items():
-            if check in fnmap:                
+            if check in fnmap:
                 value = value and value.strip()
                 if not fnmap[check](value):
                     return False
@@ -130,9 +130,9 @@ def questionset_satisfies_checks(questionset, runinfo, checks=None):
     """Return True if the runinfo passes the checks specified in the QuestionSet
 
     Checks is an optional dictionary with the keys being questionset.pk and the
-    values being the checks of the contained questions. 
-    
-    This, in conjunction with fetch_checks allows for fewer 
+    values being the checks of the contained questions.
+
+    This, in conjunction with fetch_checks allows for fewer
     db roundtrips and greater performance.
 
     Sadly, checks cannot be hashed and therefore the request cache is useless
@@ -169,7 +169,7 @@ def questionset_satisfies_checks(questionset, runinfo, checks=None):
 def get_progress(runinfo):
 
     position, total = 0, 0
-    
+
     current = runinfo.questionset
     sets = current.questionnaire.questionsets()
 
@@ -190,7 +190,7 @@ def get_progress(runinfo):
         progress = 1
     else:
         progress = float(position) / float(total) * 100.00
-        
+
         # progress is always at least one percent
         progress = progress >= 1.0 and progress or 1
 
@@ -203,14 +203,14 @@ def get_async_progress(request, runcode, *args, **kwargs):
     response = dict(progress=get_progress(runinfo))
 
     cache.set('progress' + runinfo.random, response['progress'])
-    response = HttpResponse(json.dumps(response), 
+    response = HttpResponse(json.dumps(response),
                mimetype='application/javascript');
     response["Cache-Control"] = "no-cache"
     return response
 
 def fetch_checks(questionsets):
     ids = [qs.pk for qs in questionsets]
-    
+
     query = Question.objects.filter(questionset__pk__in=ids)
     query = query.values('questionset_id', 'checks', 'number')
 
@@ -233,12 +233,12 @@ def redirect_to_qs(runinfo):
 
     # skip questionsets that don't pass
     if not questionset_satisfies_checks(runinfo.questionset, runinfo):
-        
+
         next = runinfo.questionset.next()
-        
+
         while next and not questionset_satisfies_checks(next, runinfo):
             next = next.next()
-        
+
         runinfo.questionset = next
         runinfo.save()
 
@@ -300,7 +300,7 @@ def questionnaire(request, runcode=None, qs=None):
         return set_language(request, runinfo, request.path)
 
     # --------------------------------
-    # --- Handle non-POST requests --- 
+    # --- Handle non-POST requests ---
     # --------------------------------
 
     if request.method != "POST":
@@ -461,8 +461,8 @@ def show_questionnaire(request, runinfo, errors={}):
     jstriggers = []
     qvalues = {}
 
-    # initialize qvalues        
-    cookiedict = runinfo.get_cookiedict()                                                                                                                       
+    # initialize qvalues
+    cookiedict = runinfo.get_cookiedict()
     for k,v in cookiedict.items():
         qvalues[k] = v
 
@@ -487,7 +487,7 @@ def show_questionnaire(request, runinfo, errors={}):
             'qalpha_class' : _qalpha and (ord(_qalpha[-1]) % 2 \
                                           and ' alodd' or ' aleven') or '',
         }
-        
+
         # substitute answer texts
         substitute_answer(qvalues, question)
 
@@ -513,9 +513,9 @@ def show_questionnaire(request, runinfo, errors={}):
                 jstriggers.extend(qdict['jstriggers'])
             if 'qvalue' in qdict and not question.number in cookiedict:
                 qvalues[question.number] = qdict['qvalue']
-                
+
         qlist.append( (question, qdict) )
-    
+
     try:
         has_progress = settings.QUESTIONNAIRE_PROGRESS in ('async', 'default')
         async_progress = settings.QUESTIONNAIRE_PROGRESS == 'async'
@@ -569,7 +569,7 @@ def substitute_answer(qvalues, obj):
     Only answers with 'store' in their check will work with this.
 
     """
-        
+
     if qvalues:
         magic = 'subst_with_ans_'
         regex =r'subst_with_ans_(\S+)'
@@ -578,14 +578,14 @@ def substitute_answer(qvalues, obj):
         text_attributes = [a for a in dir(obj) if a.startswith('text_')]
 
         for answerid in replacements:
-            
+
             target = magic + answerid
             replacement = qvalues.get(answerid.lower(), '')
 
             for attr in text_attributes:
                 oldtext = getattr(obj, attr)
                 newtext = oldtext.replace(target, replacement)
-                
+
                 setattr(obj, attr, newtext)
 
 
@@ -706,14 +706,14 @@ def answer_export(questionnaire, answers=None):
     questionnaire -- questionnaire model for export
     answers -- query set of answers to include in export, defaults to all
 
-    Return a flat dump of column headings and all the answers for a 
-    questionnaire (in query set answers) in the form (headings, answers) 
+    Return a flat dump of column headings and all the answers for a
+    questionnaire (in query set answers) in the form (headings, answers)
     where headings is:
         ['question1 number', ...]
     and answers is:
         [(subject1, 'runid1', ['answer1.1', ...]), ... ]
 
-    The headings list might include items with labels like 
+    The headings list might include items with labels like
     'questionnumber-freeform'.  Those columns will contain all the freeform
     answers for that question (separated from the other answer data).
 
@@ -722,7 +722,7 @@ def answer_export(questionnaire, answers=None):
 
     The items in the answers list are unicode strings or empty strings
     if no answer was given.  The number of elements in each answer list will
-    always match the number of headings.    
+    always match the number of headings.
     """
     if answers is None:
         answers = Answer.objects.all()
@@ -747,14 +747,14 @@ def answer_export(questionnaire, answers=None):
     row = []
     for answer in answers:
         if answer.runid != runid or answer.subject != subject:
-            if row: 
+            if row:
                 out.append((subject, runid, row))
             runid = answer.runid
             subject = answer.subject
             row = [""] * len(headings)
         ans = answer.split_answer()
         if type(ans) == int:
-            ans = str(ans) 
+            ans = str(ans)
         for choice in ans:
             col = None
             if type(choice) == list:
@@ -772,7 +772,7 @@ def answer_export(questionnaire, answers=None):
             if col is not None:
                 row[col] = choice
     # and don't forget about the last one
-    if row: 
+    if row:
         out.append((subject, runid, row))
     return headings, out
 
@@ -782,13 +782,13 @@ def answer_summary(questionnaire, answers=None):
     answers -- query set of answers to include in summary, defaults to all
 
     Return a summary of the answer totals in answer_qs in the form:
-    [('q1', 'question1 text', 
-        [('choice1', 'choice1 text', num), ...], 
+    [('q1', 'question1 text',
+        [('choice1', 'choice1 text', num), ...],
         ['freeform1', ...]), ...]
 
     questions are returned in questionnaire order
     choices are returned in question order
-    freeform options are case-insensitive sorted 
+    freeform options are case-insensitive sorted
     """
 
     if answers is None:
@@ -822,10 +822,13 @@ def answer_summary(questionnaire, answers=None):
                     # be tolerant of improperly marked data
                     freeforms.append(choice)
         freeforms.sort(numal_sort)
+
         summary.append((question.number, question.text, [
-            (n, t, choice_totals[n]) for (n, t) in choices], freeforms))
+            (n, t, choice_totals[n]) for (n, t) in choices],
+            freeforms))
+
     return summary
-    
+
 def has_tag(tag, runinfo):
     """ Returns true if the given runinfo contains the given tag. """
     return tag in (t.strip() for t in runinfo.tags.split(','))
@@ -850,7 +853,7 @@ def dep_check(expr, runinfo, answerdict):
     When looking up the answer, it first checks if it's in the answerdict,
     then it checks runinfo's cookies, then it does a database lookup to find
     the answer.
-    
+
     The use of the comma separator is purely historical.
     """
 
@@ -899,7 +902,7 @@ def dep_check(expr, runinfo, answerdict):
     if not actual_answer:
         if check_question.getcheckdict():
             actual_answer = check_question.getcheckdict().get('default')
-    
+
     if actual_answer is None:
         actual_answer = u''
     if check_answer[0:1] in "<>":

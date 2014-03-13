@@ -17,7 +17,7 @@ def split_numal(val):
         if not val[i].isdigit():
             return int(val[0:i] or '0'), val[i:]
     return int(val), ''
-        
+
 
 def numal_sort(a, b):
     """Sort a list numeric-alphabetically
