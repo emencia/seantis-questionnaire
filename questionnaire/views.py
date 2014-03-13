@@ -782,7 +782,7 @@ def answer_summary(questionnaire, answers=None):
     answers -- query set of answers to include in summary, defaults to all
 
     Return a summary of the answer totals in answer_qs in the form:
-    [('q1', 'question1 text',
+    [('q1', 'question1 text', total_ans,
         [('choice1', 'choice1 text', num), ...],
         ['freeform1', ...]), ...]
 
@@ -811,6 +811,7 @@ def answer_summary(questionnaire, answers=None):
             choices = []
         choice_totals = dict([(k, 0) for k, v in choices])
         freeforms = []
+        total_ans = 0
         for a in answers.filter(question=question):
             ans = a.split_answer()
             for choice in ans:
@@ -823,9 +824,8 @@ def answer_summary(questionnaire, answers=None):
                     freeforms.append(choice)
         freeforms.sort(numal_sort)
 
-        summary.append((question.number, question.text, [
-            (n, t, choice_totals[n]) for (n, t) in choices],
-            freeforms))
+        summary.append((question.number, question.text, total_ans, [
+            (n, t, choice_totals[n]) for (n, t) in choices], freeforms))
 
     return summary
 
