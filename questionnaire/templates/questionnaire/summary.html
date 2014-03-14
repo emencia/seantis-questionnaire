@@ -8,8 +8,19 @@
     <h5>{{answer.0}} - {{answer.1}}</h5>
 
     <ul class="answer-options">
-        {% for option in answer.3 %}
-            <li>{{option.1}} - {{option.2}} ({% widthratio option.2 answer.2 100 %} %)</li>
+        {% if answer.3 %}
+            {% for option in answer.3 %}
+                <li>{{option.1}} - {{option.2}} ({% widthratio option.2 answer.2 100 %} %)</li>
+            {% endfor%}
+        {% endif%}
+
+        {% if answer.4 %}
+            {% for option in answer.4|slice:"4:" %}
+                <li>{{option.1}} - {{option.2}} </li>
+            {% endfor%}
+        {% endif%}
+        {% for option in answer.4 %}
+            <li>{{option}}</li>
         {% endfor%}
     </ul>
     <div class="total-answers">{% trans 'Total answers' %} : {{answer.2}}</div>
