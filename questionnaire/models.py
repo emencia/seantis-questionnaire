@@ -226,6 +226,11 @@ class RunInfoHistory(models.Model):
     def __unicode__(self):
         return "%s: %s on %s" % (self.runid, self.subject, self.completed)
 
+    def get_date(self):
+        return '%02d/%02d/%d' % (self.completed.day,
+                                 self.completed.month,
+                                 self.completed.year)
+
     def answers(self):
         "Returns the query for the answers."
         return Answer.objects.filter(subject=self.subject, runid=self.runid)
@@ -281,12 +286,12 @@ class Question(models.Model):
 
     def __unicode__(self):
         return u'{%s} (%s) %s' % (unicode(self.questionset), self.number, self.text)
-        
+
     def sameas(self):
         if self.type == 'sameas':
             try:
-                self.__sameas = res = getattr(self, "__sameas", 
-                    Question.objects.get(number=self.checks, 
+                self.__sameas = res = getattr(self, "__sameas",
+                    Question.objects.get(number=self.checks,
                         questionset__questionnaire=self.questionset.questionnaire))
                 return res
             except Question.DoesNotExist:
@@ -377,7 +382,7 @@ class Answer(models.Model):
         try:
             return json.loads(self.answer)
         except ValueError:
-            # this was likely saved as plain text, try to guess what the 
+            # this was likely saved as plain text, try to guess what the
             # value(s) were
             if 'multiple' in self.question.type:
                 return self.answer.split('; ')
