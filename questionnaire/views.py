@@ -26,6 +26,7 @@ import logging
 import random
 import md5
 import re
+import transmeta
 
 def r2r(tpl, request, **contextdict):
     "Shortcut to use RequestContext instead of Context in templates"
@@ -616,6 +617,18 @@ def set_language(request, runinfo=None, next=None):
     return response
 
 
+def get_header(question):
+    text = question.text
+    if text:
+        return text
+    for language, language_title in transmeta.get_languages():
+        text = getattr(question, 'text_%s' % language)
+        if text:
+            return text
+
+    return u''
+
+
 def _table_headers(questions):
     """
     Return the header labels for a set of questions as a list of strings.
@@ -625,21 +638,30 @@ def _table_headers(questions):
     """
     ql = list(questions)
     ql.sort(lambda x, y: numal_sort(x.number, y.number))
+
     columns = []
+    headings = []
     for q in ql:
+        label = u'%s - %s' % (q.number, get_header(q))
         if q.type == 'choice-yesnocomment':
             columns.extend([q.number, q.number + "-freeform"])
+            headings.extend([label, label + " : freeform"])
         elif q.type == 'choice-freeform':
             columns.extend([q.number, q.number + "-freeform"])
+            headings.extend([label, label + " : freeform"])
         elif q.type.startswith('choice-multiple'):
             cl = [c.value for c in q.choice_set.all()]
             cl.sort(numal_sort)
             columns.extend([q.number + '-' + value for value in cl])
+            headings.extend([label + ' : ' + value for value in cl])
             if q.type == 'choice-multiple-freeform':
                 columns.append(q.number + '-freeform')
+                headings.append(label + ' : freeform')
         else:
             columns.append(q.number)
-    return columns
+            headings.append(label)
+
+    return columns, headings
 
 
 
@@ -734,10 +756,10 @@ def answer_export(questionnaire, answers=None):
     answers = answers.select_related()
     questions = Question.objects.filter(
         questionset__questionnaire=questionnaire)
-    headings = _table_headers(questions)
+    columns, headings = _table_headers(questions)
 
     coldict = {}
-    for num, col in enumerate(headings): # use coldict to find column indexes
+    for num, col in enumerate(columns): # use coldict to find column indexes
         coldict[col] = num
     # collect choices for each question
     qchoicedict = {}
@@ -753,7 +775,7 @@ def answer_export(questionnaire, answers=None):
                 out.append((subject, runid, row))
             runid = answer.runid
             subject = answer.subject
-            row = [""] * len(headings)
+            row = [""] * len(columns)
         ans = answer.split_answer()
         if type(ans) == int:
             ans = str(ans)
