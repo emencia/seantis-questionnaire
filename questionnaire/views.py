@@ -807,8 +807,6 @@ def show_summary(request, qid): # questionnaire_id
     questionnaire = get_object_or_404(Questionnaire, pk=int(qid))
     summay_data = answer_summary(questionnaire)
 
-    from pprint import pprint
-    print pprint(summay_data)
     return r2r("questionnaire/summary.html", request,
                 **{'summary_data':summay_data, 'questionnaire':questionnaire})
 
