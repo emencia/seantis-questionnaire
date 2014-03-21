@@ -358,6 +358,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, help_text = u"The question that this is an answer to")
     runid = models.CharField(u'RunID', help_text = u"The RunID (ie. year)", max_length=32)
     answer = models.TextField()
+    mtime = models.DateTimeField(auto_now=True, null=True)
 
     def __unicode__(self):
         return "Answer(%s: %s, %s)" % (self.question.number, self.subject.surname, self.subject.givenname)
