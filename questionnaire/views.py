@@ -805,10 +805,10 @@ def show_summary(request, qid): # questionnaire_id
     For a given questionnaire id, generate a summary answers
     """
     questionnaire = get_object_or_404(Questionnaire, pk=int(qid))
-    summay_data = answer_summary(questionnaire)
+    summary_data = answer_summary(questionnaire)
 
     return r2r("questionnaire/summary.html", request,
-                **{'summary_data':summay_data, 'questionnaire':questionnaire})
+               summary_data=summary_data, questionnaire=questionnaire)
 
 def answer_summary(questionnaire, answers=None):
     """
@@ -859,8 +859,18 @@ def answer_summary(questionnaire, answers=None):
                     freeforms.append(choice)
         freeforms.sort(numal_sort)
 
-        summary.append((question.number, question.text, total_ans, [
-            (n, t, choice_totals[n]) for (n, t) in choices], freeforms))
+        aux = {}
+        for freeform in freeforms:
+            aux.setdefault(freeform, 0)
+            aux[freeform] += 1
+
+        choices = [ (n, t, choice_totals[n]) for (n, t) in choices ]
+        other = _(u'Other: ') if choices else u''
+        for freeform in freeforms:
+            choices.append((freeform, other + freeform, aux[freeform]))
+
+        summary.append(
+            (question.number, question.text, total_ans, choices, []))
 
     return summary
 
