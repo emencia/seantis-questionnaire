@@ -857,7 +857,6 @@ def answer_summary(questionnaire, answers=None):
                 else:
                     # be tolerant of improperly marked data
                     freeforms.append(choice)
-        freeforms.sort(numal_sort)
 
         aux = {}
         for freeform in freeforms:
@@ -866,7 +865,7 @@ def answer_summary(questionnaire, answers=None):
 
         choices = [ (n, t, choice_totals[n]) for (n, t) in choices ]
         other = _(u'Other: ') if choices else u''
-        for freeform in freeforms:
+        for freeform in sorted(aux.keys(), numal_sort):
             choices.append((freeform, other + freeform, aux[freeform]))
 
         summary.append(
