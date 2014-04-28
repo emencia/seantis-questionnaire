@@ -96,9 +96,12 @@ class QuestionSet(models.Model):
         help_text = """Current options are 'femaleonly' or 'maleonly' and shownif="QuestionNumber,Answer" which takes the same format as <tt>requiredif</tt> for questions.""")
     text = models.TextField(help_text="This is interpreted as Textile: <a href='http://hobix.com/textile/quick.html'>http://hobix.com/textile/quick.html</a>")
 
-    def questions(self):
+    def questions(self, for_summary=False):
         if not hasattr(self, "__qcache"):
-            self.__qcache = list(Question.objects.filter(questionset=self.id).order_by('number'))
+            questions = Question.objects.filter(questionset=self.id).order_by('number')
+            if for_summary:
+                questions = questions.filter(show_in_summary=True)
+            self.__qcache = list(questions)
             self.__qcache.sort()
         return self.__qcache
 

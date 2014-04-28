@@ -429,9 +429,12 @@ def send_summary_email(runinfo, questionnaire):
         return
 
     emails = questionnaire.notification_emails.split('\r\n')
-    questions = Question.objects.filter(
-        questionset__questionnaire=questionnaire).order_by(
-        'questionset__sortid', 'number')
+
+    questions = []
+    qsets = QuestionSet.objects.filter(questionnaire=questionnaire).order_by('sortid')
+
+    for qs in qsets:
+        questions.extend(qs.questions())
 
     answers = Answer.objects.filter(runid=runinfo.runid)
 
@@ -860,9 +863,12 @@ def answer_summary(questionnaire, answers=None):
     if answers is None:
         answers = Answer.objects.all()
     answers = answers.filter(question__questionset__questionnaire=questionnaire)
-    questions = Question.objects.filter(show_in_summary=True,
-        questionset__questionnaire=questionnaire).order_by(
-        'questionset__sortid', 'number')
+
+    questions = []
+    qsets = QuestionSet.objects.filter(questionnaire=questionnaire).order_by('sortid')
+
+    for qs in qsets:
+        questions.extend(qs.questions(True))
 
     summary = []
     for question in questions:
