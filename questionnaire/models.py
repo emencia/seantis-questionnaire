@@ -243,6 +243,7 @@ class RunInfoHistory(models.Model):
     class Meta:
         verbose_name_plural = 'Run Info History'
 
+
 class Question(models.Model):
     __metaclass__ = TransMeta
 
