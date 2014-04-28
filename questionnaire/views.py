@@ -448,7 +448,11 @@ def send_summary_email(runinfo, questionnaire):
            'questionnaire':questionnaire,}
 
     subject = render_to_string('questionnaire/email_subject.txt', ctx)
+    subject = subject.replace('\n','')
+
     message = render_to_string('questionnaire/email_body.txt', ctx)
+
+    import pdb;pdb.set_trace()
 
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, emails)
 
