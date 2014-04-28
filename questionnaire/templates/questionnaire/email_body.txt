@@ -1,0 +1,4 @@
+{% load i18n %}
+{% for a in answers %}
+    {{a.number}}. {{a.question}} : {{a.answer}}
+{% endfor%}

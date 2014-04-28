@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Questionnaire.notification_emails'
         db.add_column(u'questionnaire_questionnaire', 'notification_emails',
-                      self.gf('django.db.models.fields.TextField')(default='/static/complete.html'),
+                      self.gf('django.db.models.fields.TextField')(null=True),
                       keep_default=False)
 
 
@@ -56,7 +56,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Questionnaire'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'notification_emails': ('django.db.models.fields.TextField', [], {'default': "'/static/complete.html'"}),
+            'notification_emails': ('django.db.models.fields.TextField', [], {'null': 'True'}),
             'redirect_url': ('django.db.models.fields.CharField', [], {'default': "'/static/complete.html'", 'max_length': '128'})
         },
         u'questionnaire.questionset': {

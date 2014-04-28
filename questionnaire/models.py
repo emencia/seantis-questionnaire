@@ -67,7 +67,8 @@ class Subject(models.Model):
 class Questionnaire(models.Model):
     name = models.CharField(max_length=128)
     redirect_url = models.CharField(max_length=128, help_text=_("URL to redirect to when Questionnaire is complete. Macros: $SUBJECTID, $RUNID, $LANG"), default="/static/complete.html")
-    notification_emails = models.TextField(help_text=_("One email per line"), default="/static/complete.html")
+    notification_emails = models.TextField(help_text=_("One email per line"),
+                                           null=True)
 
     def __unicode__(self):
         return self.name
@@ -270,6 +271,7 @@ class Question(models.Model):
         'eg. <tt>requiredif="Q1,A or Q2,B"</tt>')
     footer = models.TextField(u"Footer", help_text="Footer rendered below the question interpreted as textile", blank=True)
 
+    show_in_summary = models.BooleanField(default=True)
 
     def questionnaire(self):
         return self.questionset.questionnaire
@@ -328,6 +330,20 @@ class Question(models.Model):
 
     def questioninclude(self):
         return "questionnaire/" + self.get_type() + ".html"
+
+    def choice_str(self, answer):
+        choices = self.choices()
+        values = ""
+        for a in answer.split_answer():
+            for choice in choices:
+                if str(a) == choice.value:
+                    if values:
+                        values += ' || '
+                    values += choice.text
+            if not values:
+                values = str(a)
+
+        return values
 
     def __cmp__(a, b):
         anum, astr = split_numal(a.number)

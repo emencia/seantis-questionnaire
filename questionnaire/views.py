@@ -28,6 +28,11 @@ import md5
 import re
 import transmeta
 
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
+
+
 def r2r(tpl, request, **contextdict):
     "Shortcut to use RequestContext instead of Context in templates"
     contextdict['request'] = request
@@ -413,10 +418,37 @@ def questionnaire(request, runcode=None, qs=None):
     runinfo.save()
 
     if next is None: # we are finished
+        send_summary_email(runinfo, questionnaire)
         return finish_questionnaire(runinfo, questionnaire)
 
     transaction.commit()
     return redirect_to_qs(runinfo)
+
+def send_summary_email(runinfo, questionnaire):
+    if not questionnaire.notification_emails:
+        return
+
+    emails = questionnaire.notification_emails.split('\r\n')
+    questions = Question.objects.filter(
+        questionset__questionnaire=questionnaire).order_by(
+        'questionset__sortid', 'number')
+
+    answers = Answer.objects.filter(runid=runinfo.runid)
+
+    summary = []
+    for q in questions:
+        answer =  answers.get(question=q)
+        summary.append({'number':q.number, 'question': q.text,
+                        'answer':q.choice_str(answer)})
+
+    ctx = {'answers': summary,
+           'questionnaire':questionnaire,}
+
+    subject = render_to_string('questionnaire/email_subject.txt', ctx)
+    message = render_to_string('questionnaire/email_body.txt', ctx)
+
+    for email in emails:
+        send_mail('subject', 'message', settings.DEFAULT_FROM_EMAIL, email)
 
 def finish_questionnaire(runinfo, questionnaire):
     hist = RunInfoHistory()

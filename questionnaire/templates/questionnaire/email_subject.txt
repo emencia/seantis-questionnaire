@@ -1,0 +1,2 @@
+{% load i18n %}
+{%trans 'Answer for questionnaire'%} : {{questionnaire.name}}
