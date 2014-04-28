@@ -450,8 +450,7 @@ def send_summary_email(runinfo, questionnaire):
     subject = render_to_string('questionnaire/email_subject.txt', ctx)
     message = render_to_string('questionnaire/email_body.txt', ctx)
 
-    for email in emails:
-        send_mail('subject', 'message', settings.DEFAULT_FROM_EMAIL, email)
+    send_mail('subject', 'message', settings.DEFAULT_FROM_EMAIL, emails)
 
 def finish_questionnaire(runinfo, questionnaire):
     hist = RunInfoHistory()
