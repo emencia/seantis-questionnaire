@@ -66,7 +66,8 @@ class Subject(models.Model):
 
 class Questionnaire(models.Model):
     name = models.CharField(max_length=128)
-    redirect_url = models.CharField(max_length=128, help_text="URL to redirect to when Questionnaire is complete. Macros: $SUBJECTID, $RUNID, $LANG", default="/static/complete.html")
+    redirect_url = models.CharField(max_length=128, help_text=_("URL to redirect to when Questionnaire is complete. Macros: $SUBJECTID, $RUNID, $LANG"), default="/static/complete.html")
+    notification_emails = models.TextField(help_text=_("One email per line"), default="/static/complete.html")
 
     def __unicode__(self):
         return self.name
