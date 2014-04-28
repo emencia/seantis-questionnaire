@@ -860,7 +860,7 @@ def answer_summary(questionnaire, answers=None):
     if answers is None:
         answers = Answer.objects.all()
     answers = answers.filter(question__questionset__questionnaire=questionnaire)
-    questions = Question.objects.filter(
+    questions = Question.objects.filter(show_in_summary=True,
         questionset__questionnaire=questionnaire).order_by(
         'questionset__sortid', 'number')
 
