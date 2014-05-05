@@ -219,8 +219,9 @@ msgstr ""
 
 #: templates/questionnaire/summary.html:5
 msgid "Summary answers for questionnaire"
-msgstr ""
+msgstr "Liste des réponses du questionnaire"
 
 #: templates/questionnaire/summary.html:26
 msgid "Total answers"
-msgstr ""
+msgstr "Nombre de réponses"
+
