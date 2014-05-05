@@ -8,10 +8,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-06-04 10:11+0200\n"
+"POT-Creation-Date: 2014-05-05 11:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -76,23 +77,61 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: qprocessors/choice.py:38 qprocessors/simple.py:66
+#: models.py:69
+msgid ""
+"URL to redirect to when Questionnaire is complete. Macros: $SUBJECTID, "
+"$RUNID, $LANG"
+msgstr ""
+
+#: models.py:70
+msgid "One email per line"
+msgstr ""
+
+#: views.py:749
+msgid "questionnaire"
+msgstr ""
+
+#: views.py:749
+msgid "runid"
+msgstr ""
+
+#: views.py:749
+msgid "date"
+msgstr ""
+
+#: views.py:886 templates/questionnaire/choice-yesnocomment.html:10
+msgid "Yes"
+msgstr "Oui"
+
+#: views.py:886 templates/questionnaire/choice-yesnocomment.html:18
+msgid "No"
+msgstr "Non"
+
+#: views.py:888 templates/questionnaire/choice-yesnocomment.html:27
+msgid "Don't Know"
+msgstr "Ne sais pas"
+
+#: views.py:914
+msgid "Other: "
+msgstr ""
+
+#: qprocessors/choice.py:38 qprocessors/simple.py:68
 msgid "You must select an option"
 msgstr "Veuillez choisir une option!"
 
-#: qprocessors/choice.py:42 qprocessors/simple.py:70 qprocessors/simple.py:72
-#: qprocessors/simple.py:74 qprocessors/simple.py:77
+#: qprocessors/choice.py:42 qprocessors/simple.py:72 qprocessors/simple.py:74
+#: qprocessors/simple.py:76 qprocessors/simple.py:79
 #: qprocessors/timeperiod.py:56
 msgid "Field cannot be blank"
 msgstr ""
 "Merci de donner une réponse à cette question; ce champs ne peut rester vide."
 
-#: qprocessors/choice.py:46
+#: qprocessors/choice.py:47
 #, fuzzy
 msgid "Invalid option!"
 msgstr "Option non valable"
 
-#: qprocessors/choice.py:107
+#: qprocessors/choice.py:108
 #, python-format
 msgid "You must select at least %d option"
 msgid_plural "You must select at least %d options"
@@ -103,7 +142,7 @@ msgstr[1] "Vous devez cocher au moins %d options"
 msgid "Processor not defined for this question"
 msgstr ""
 
-#: qprocessors/range.py:35
+#: qprocessors/range.py:41
 msgid "Out of range"
 msgstr ""
 
@@ -143,18 +182,45 @@ msgstr "Période non valable"
 msgid "Time period must be a whole number"
 msgstr "La période doit être un chiffre entier"
 
-#: templates/questionnaire/choice-yesnocomment.html:3
-msgid "Yes"
-msgstr "Oui"
+#: templates/admin/questionnaire/question/change_form.html:10
+msgid "Choices"
+msgstr ""
 
-#: templates/questionnaire/choice-yesnocomment.html:5
-msgid "No"
-msgstr "Non"
+#: templates/admin/questionnaire/question/change_form.html:12
+msgid "Sortid determines the choice order."
+msgstr ""
 
-#: templates/questionnaire/choice-yesnocomment.html:8
-msgid "Don't Know"
-msgstr "Ne sais pas"
+#: templates/admin/questionnaire/question/change_form.html:13
+msgid ""
+"Short values will appear in exported data and are \n"
+"referenced in 'Additional checks' fields.  Numbers, letters \n"
+"or single words are valid."
+msgstr ""
 
-#: templates/questionnaire/questionset.html:72
+#: templates/questionnaire/choice-yesnocomment.html:35
+msgid "comment"
+msgstr ""
+
+#: templates/questionnaire/email_subject.txt:2
+msgid "Answer for questionnaire"
+msgstr ""
+
+#: templates/questionnaire/questionset.html:58
+msgid "edit"
+msgstr ""
+
+#: templates/questionnaire/questionset.html:95
 msgid "Continue"
 msgstr "Continuer"
+
+#: templates/questionnaire/questionset.html:100
+msgid "return to previous page"
+msgstr ""
+
+#: templates/questionnaire/summary.html:5
+msgid "Summary answers for questionnaire"
+msgstr ""
+
+#: templates/questionnaire/summary.html:26
+msgid "Total answers"
+msgstr ""
