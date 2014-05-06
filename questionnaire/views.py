@@ -748,7 +748,11 @@ def export_csv(request, qid): # questionnaire_id
     writer = UnicodeWriter(fd)
     writer.writerow([_(u'questionnaire'), _(u'runid'), _(u'date')] + headings)
     for subject, runid, answer_row in answers:
-        rhi =  RunInfoHistory.objects.get(runid=runid)
+        try:
+            rhi =  RunInfoHistory.objects.get(runid=runid)
+        except RunInfoHistory.DoesNotExist:
+            continue
+
         row = ["%s/%s" % (subject.id, subject.state), runid,
                rhi.get_date()] + [
             a if a else '--' for a in answer_row]
