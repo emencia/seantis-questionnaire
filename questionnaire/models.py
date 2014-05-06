@@ -345,7 +345,7 @@ class Question(models.Model):
                         values += ' || '
                     values += choice.text
             if not values:
-                values = str(a)
+                values = a.encode('UTF-8')
 
         return values
 
