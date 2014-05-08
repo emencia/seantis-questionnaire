@@ -418,8 +418,9 @@ def questionnaire(request, runcode=None, qs=None):
     runinfo.save()
 
     if next is None: # we are finished
+        result = finish_questionnaire(runinfo, questionnaire)
         send_summary_email(runinfo, questionnaire)
-        return finish_questionnaire(runinfo, questionnaire)
+        return result
 
     transaction.commit()
     return redirect_to_qs(runinfo)
@@ -440,7 +441,13 @@ def send_summary_email(runinfo, questionnaire):
 
     summary = []
     for q in questions:
-        answer =  answers.get(question=q)
+        #~ Some questions are displayed depending on another question and
+        #~ maybe these questions don't have an answer.
+        try:
+            answer =  answers.get(question=q)
+        except Answer.DoesNotExist:
+            continue
+
         summary.append({'number':q.number, 'question': q.text,
                         'answer':q.choice_str(answer)})
 
