@@ -848,10 +848,8 @@ def answer_export(questionnaire, answers=None):
 
 def clear_answers(request, qid): # questionnaire_id
     questionnaire = get_object_or_404(Questionnaire, pk=int(qid))
-    run_history = RunInfoHistory.objects.filter(questionnaire=questionnaire)
-    for run in run_history:
-        Answer.objects.filter(runid=run.runid).delete()
-        run.delete()
+    RunInfoHistory.objects.filter(questionnaire=questionnaire).delete()
+    Answer.objects.filter(question__questionset__questionnaire=questionnaire).delete()
 
     return HttpResponseRedirect('/admin/questionnaire/questionnaire/')
 
